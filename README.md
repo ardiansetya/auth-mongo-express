@@ -15,9 +15,3 @@
 - **Authentication**: JWT (JSON Web Token)
 - **Environment Variables**: `dotenv`
 
-## Instalasi dan Penggunaan
-
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/username/project-name.git
-   cd project-name
