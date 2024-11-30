@@ -1,6 +1,7 @@
 import { User } from "../models/User.js";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
+import { sendVerificationEmail } from "../mailtrap/emails.js";
 
 export const register = async (req, res) => {
    const { email, password, name } = req.body;
@@ -30,13 +31,18 @@ export const register = async (req, res) => {
       await user.save();
     
       // jwt
-      generateTokenAndSetCookie(res, user._id);
+      generateTokenAndSetCookie(res, user._id)
+
+      await sendVerificationEmail(user.email, verificationToken);
+
       res.status(201).send({
          success: true, message: "User registered successfully", 
          user: {
             ...user._doc,
             password: undefined
          } });
+
+
 
 
    } catch (error) {
