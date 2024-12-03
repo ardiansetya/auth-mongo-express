@@ -1,7 +1,8 @@
 import { User } from "../models/User.js";
+import crypto from "crypto";
 import bcryptjs from "bcryptjs";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
+import { resetPasswordEmail, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
 
 export const register = async (req, res) => {
    const { email, password, name } = req.body;
@@ -33,7 +34,7 @@ export const register = async (req, res) => {
       // jwt
       generateTokenAndSetCookie(res, user._id)
 
-      await sendVerificationEmail(user.email, verificationToken);
+      await sendVerificationEmail(user.email, verificationToklen);
 
 
 
@@ -45,9 +46,6 @@ export const register = async (req, res) => {
          }
       });
 
-
-
-
    } catch (error) {
       res.status(400).json({ success: false, message: error.message })
    }
@@ -55,7 +53,7 @@ export const register = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
    const { code } = req.body
-
+   
    try {
       const user = await User.findOne({
          verificationToken: code,
@@ -113,6 +111,35 @@ export const login = async (req, res) => {
    } catch (error) {
       console.log(error)
       res.status(500).json({ success: false, message: error.message })
+   }
+
+}
+
+export const forgotPassword = async (req, res) => {
+   const {email} = req.body
+
+   try {
+      const user = await User.findOne({email})
+
+      if(!user){
+         res.status(404).json({success:false, message: "Usaer not found!"})
+      }
+
+      // generate token
+      const resetToken = crypto.randomBytes(32).toString("hex");
+
+
+      
+      user.resetPasswordToken = resetToken;
+
+      await user.save();
+      await resetPasswordEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
+
+      res.status(200).json({success: true, message: "Reset password email sent successfully"})
+      
+   } catch (error) {
+      console.log(error.message)
+      throw new Error(error.message)
    }
 
 }

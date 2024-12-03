@@ -1,8 +1,9 @@
-import { VERIFICATION_EMAIL_TEMPLATE } from "./emailsTemplate.js";
+import { tracingChannel } from "diagnostics_channel";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from "./emailsTemplate.js";
 import { mailtrapClient, sender } from "./mailtrap.config.js";
 
 export const sendVerificationEmail = async (email, verificationToken) => {
-   const recipient = [{email}];
+   const recipient = [{ email }];
 
    try {
       const response = await mailtrapClient.send({
@@ -16,19 +17,19 @@ export const sendVerificationEmail = async (email, verificationToken) => {
       console.log("email sent", response);
    } catch (error) {
       console.log(error)
-      throw new Error({message: error.message});
+      throw new Error({ message: error.message });
    }
 }
 
 export const sendWelcomeEmail = async (email, name) => {
-   const recipient = [{email}];
+   const recipient = [{ email }];
 
    try {
-     const response = await mailtrapClient.send({
+      const response = await mailtrapClient.send({
          from: sender,
          to: recipient,
-         template_uuid: "7a87cd4f-20d2-46d1-8366-d46687a7f91b", 
-         template_variables:{
+         template_uuid: "7a87cd4f-20d2-46d1-8366-d46687a7f91b",
+         template_variables: {
             "company_info_name": "Ambalabu Company",
             "first_name": name
          }
@@ -37,6 +38,27 @@ export const sendWelcomeEmail = async (email, name) => {
    } catch (error) {
       console.log(error)
 
-      throw new Error({message: error.message});
+      throw new Error({ message: error.message });
    }
 }
+
+export const resetPasswordEmail = async (email, resetlUrl) => {
+   const recipient = [{ email }];
+
+   try {
+      const response = await mailtrapClient.send({
+         from: sender,
+         to: recipient,
+         subject: "Reset Your Password",
+         html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetlUrl),
+         category: "Email Verification",
+      })
+
+      console.log("email sned response:", response)
+
+   } catch (error) {
+      console.log(error)
+
+      throw new Error({ message: error.message });
+   }
+} 
