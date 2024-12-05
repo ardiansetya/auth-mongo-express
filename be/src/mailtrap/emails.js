@@ -1,5 +1,5 @@
 import { tracingChannel } from "diagnostics_channel";
-import { PASSWORD_RESET_REQUEST_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from "./emailsTemplate.js";
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from "./emailsTemplate.js";
 import { mailtrapClient, sender } from "./mailtrap.config.js";
 
 export const sendVerificationEmail = async (email, verificationToken) => {
@@ -62,3 +62,22 @@ export const resetPasswordEmail = async (email, resetlUrl) => {
       throw new Error({ message: error.message });
    }
 } 
+
+export const sendResetSuccsessEmail = async (email) => {
+   const recipient = [{ email }];
+
+   try {
+      const response = await mailtrapClient.send({
+         from: sender,
+         to: recipient,
+         subject: "Reset Password Successful",
+         html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+         category: "Reset Password",
+      })
+
+      console.log("email sent", response);
+   } catch (error) {
+      console.log(error.message)
+      throw new Error({ message: error.message });
+   }
+}
