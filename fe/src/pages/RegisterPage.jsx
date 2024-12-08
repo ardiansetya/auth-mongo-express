@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Input from "../components/Input";
 import { Mail, User, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 
 const RegisterPage = () => {
   const handleRegister = (e) => {
@@ -46,7 +47,7 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {/* password strength meter */}
+          <PasswordStrengthMeter password={password} />
 
           <button
             type="submit"

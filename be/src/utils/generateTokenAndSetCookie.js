@@ -10,7 +10,6 @@ export const generateTokenAndSetCookie = (res, userId) => {
       secure: process.env.NODE_ENV === "production", // only send cookie in HTTPS, not HTTP
       sameSite: "strict", // prevent CSRF attack
       maxAge: 7 * 24 * 60 * 60 * 1000 //7 day
-
    } )
 
    return token

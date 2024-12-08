@@ -53,7 +53,7 @@ export const register = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
    const { code } = req.body
-   
+
    try {
       const user = await User.findOne({
          verificationToken: code,
@@ -83,13 +83,13 @@ export const login = async (req, res) => {
    try {
       const user = await User.findOne({ email });
 
-      if(!user){
-        return res.status(404).json({ success: false, message: "User not found" })
+      if (!user) {
+         return res.status(404).json({ success: false, message: "User not found" })
       }
-      
+
       const isMatch = await bcryptjs.compare(password, user.password);
 
-      if(!isMatch){
+      if (!isMatch) {
          return res.status(400).json({ success: false, message: "Password is incorrect" })
       }
 
@@ -116,28 +116,28 @@ export const login = async (req, res) => {
 }
 
 export const forgotPassword = async (req, res) => {
-   const {email} = req.body
+   const { email } = req.body
 
    try {
-      const user = await User.findOne({email})
+      const user = await User.findOne({ email })
 
-      if(!user){
-         res.status(404).json({success:false, message: "Usaer not found!"})
+      if (!user) {
+         res.status(404).json({ success: false, message: "Usaer not found!" })
       }
 
       // generate token
       const resetToken = crypto.randomBytes(32).toString("hex");
 
 
-      
+
       user.resetPasswordToken = resetToken;
       user.resetPasswordExpiresAt = Date.now() + 1 * 60 * 60 * 1000 // 1 hour
 
       await user.save();
       await resetPasswordEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
 
-      res.status(200).json({success: true, message: "Reset password email sent successfully"})
-      
+      res.status(200).json({ success: true, message: "Reset password email sent successfully" })
+
    } catch (error) {
       console.log(error.message)
       throw new Error(error.message)
@@ -147,16 +147,16 @@ export const forgotPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
    try {
-      const {token } = req.params;
-      const {password} = req.body;
+      const { token } = req.params;
+      const { password } = req.body;
 
       const user = await User.findOne({
          resetPasswordToken: token,
          resetPasswordExpiresAt: { $gt: Date.now() }
       })
 
-      if(!user){
-         res.status(404).json({success:false, message: "Invalid Token"})
+      if (!user) {
+         res.status(404).json({ success: false, message: "Invalid Token" })
       }
 
       // update password
@@ -169,11 +169,11 @@ export const resetPassword = async (req, res) => {
 
       await sendResetSuccsessEmail(user.email)
 
-      res.status(200).json({success: true, message: "Password reset successfully"})
+      res.status(200).json({ success: true, message: "Password reset successfully" })
 
 
    } catch (error) {
-      
+
    }
 }
 
@@ -187,7 +187,7 @@ export const checkAuth = async (req, res) => {
    try {
       const user = await User.findById(req.userId).select("-password");
 
-      if(!user){
+      if (!user) {
          return res.status(404).json({ success: false, message: "User not found" })
       }
 
