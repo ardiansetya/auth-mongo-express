@@ -14,6 +14,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
