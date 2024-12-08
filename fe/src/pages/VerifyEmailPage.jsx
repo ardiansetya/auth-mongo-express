@@ -1,15 +1,19 @@
 import React, { useRef, useState } from "react";
-import {motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const VerifyEmailPage = () => {
-   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
 
-   const inputRef = useRef([]);
-   const navigate = useNavigate();
+  const inputRef = useRef([]);
+  const navigate = useNavigate();
 
-   const handleChange = (index, value) => {}
-   const handleKeyDown = (index, e) => {}
+  const handleChange = (index, value) => {};
+  const handleKeyDown = (index, e) => {
+    if (e.key === "Backspace" && index > 0 && !code[index]) {
+      inputRef.current[index - 1].focus();
+    }
+  };
 
   return (
     <motion.div
