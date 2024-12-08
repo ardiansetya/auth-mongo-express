@@ -1,4 +1,3 @@
-import { div } from "framer-motion/client";
 import { Check, X } from "lucide-react";
 import React from "react";
 
