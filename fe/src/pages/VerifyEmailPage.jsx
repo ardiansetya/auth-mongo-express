@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -8,12 +8,50 @@ const VerifyEmailPage = () => {
   const inputRef = useRef([]);
   const navigate = useNavigate();
 
-  const handleChange = (index, value) => {};
-  const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && index > 0 && !code[index]) {
-      inputRef.current[index - 1].focus();
+ const handleChange = (index, value) => {
+   if (!/^\d*$/.test(value)) return; // Validasi angka
+
+   const newCode = [...code];
+   if (value.length > 1) {
+     const pastedCode = value.slice(0, 6).split("");
+     for (let i = 0; i < 6; i++) {
+       newCode[i] = pastedCode[i] || "";
+     }
+     setCode(newCode);
+
+     const lastFilledIndex = newCode.findLastIndex((code) => code !== "");
+     const focusedIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
+     inputRef.current[focusedIndex].focus();
+   } else {
+     newCode[index] = value;
+     setCode(newCode);
+
+
+   if (value && index < 5) {
+      inputRef.current[index + 1].focus();
     }
-  };
+   }
+ };
+
+ const handleKeyDown = (index, e) => {
+   if (e.key === "Backspace" && index > 0 && !code[index]) {
+     e.preventDefault();
+     inputRef.current[index - 1].focus();
+   }
+ };
+
+ const handleSubmit = (e) => {
+   e.preventDefault();
+   console.log("Code:", code.join(""));
+ };
+
+// auto submit when all inputs are filled
+useEffect(() => {
+  if (code.every((digit) => digit !== "")) {
+    inputRef.current[5].blur();
+    handleSubmit(new Event("submit"));
+  }
+}, [code]);
 
   return (
     <motion.div
@@ -41,7 +79,7 @@ const VerifyEmailPage = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 type="text"
-                className="w-12 h-12 text-center bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-12 font-bold h-12 text-center bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ))}
           </div>
