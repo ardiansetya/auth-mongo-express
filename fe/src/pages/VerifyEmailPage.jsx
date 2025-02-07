@@ -79,7 +79,7 @@ useEffect(() => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 type="text"
-                className="w-12 font-bold h-12 text-center bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-12 font-bold h-12 text-xl text-center bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             ))}
           </div>

@@ -34,7 +34,7 @@ export const register = async (req, res) => {
       // jwt
       generateTokenAndSetCookie(res, user._id)
 
-      await sendVerificationEmail(user.email, verificationToklen);
+      await sendVerificationEmail(user.email, verificationToken);
 
 
 
